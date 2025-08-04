@@ -1,0 +1,46 @@
+
+---
+
+### 📁 `.gitignore`
+
+```gitignore
+# Dependencies
+/node_modules
+/.expo
+.expo/
+.expo-shared
+
+# Firebase
+firebase-debug.log
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Builds
+dist/
+build/
+web-build/
+*.apk
+*.aab
+
+# IDE/Editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
+# TypeScript
+*.tsbuildinfo
+
+# Misc
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
