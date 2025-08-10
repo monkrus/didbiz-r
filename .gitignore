@@ -1,0 +1,14 @@
+# Node / Expo
+node_modules/
+.expo/
+dist/
+web-build/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env (we’ll add Firebase env handling later if you want)
+.env
+.env.*
