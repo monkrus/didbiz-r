@@ -11,20 +11,21 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "*",
     "expo": "*",
+    "expo-barcode-scanner": "*",
     "expo-router": "*",
+    "firebase": "10.12.5",
     "react": "*",
     "react-native": "*",
+    "react-native-qrcode-svg": "*",
     "react-native-safe-area-context": "*",
     "react-native-screens": "*",
-    "@react-native-async-storage/async-storage": "*",
-    "expo-barcode-scanner": "*",
-    "react-native-qrcode-svg": "*",
     "zod": "*"
   },
   "devDependencies": {
-    "typescript": "*",
     "@types/react": "*",
-    "@types/react-native": "*"
+    "@types/react-native": "*",
+    "typescript": "*"
   }
 }
