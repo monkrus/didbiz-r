@@ -1,16 +1,16 @@
 // lib/firebase.ts
-import { Platform } from 'react-native';
-import Constants from 'expo-constants';
-import { initializeApp, getApps } from 'firebase/app';
+import { Platform } from "react-native";
+import Constants from "expo-constants";
+import { initializeApp, getApps } from "firebase/app";
 import {
   getAuth,
   initializeAuth,
   getReactNativePersistence,
   User,
-} from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+} from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type FirebaseExtra = {
   apiKey: string;
@@ -28,7 +28,7 @@ const firebaseConfig =
   (Constants.manifest2?.extra?.firebase as FirebaseExtra);
 
 if (!firebaseConfig?.apiKey || !firebaseConfig?.projectId || !firebaseConfig?.appId) {
-  console.warn('Firebase config is missing. Did you set .env and app.config.ts?');
+  console.warn("Firebase config is missing. Did you set .env and app.config.ts?");
 }
 
 // Single app instance
@@ -36,7 +36,7 @@ const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 
 // Auth: on native, we must use initializeAuth with AsyncStorage persistence
 let auth = getAuth(app);
-if (Platform.OS !== 'web') {
+if (Platform.OS !== "web") {
   try {
     auth = initializeAuth(app, {
       persistence: getReactNativePersistence(AsyncStorage),
