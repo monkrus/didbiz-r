@@ -1,16 +1,9 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
-
-# dependencies
-node_modules/
-
 # Expo
 .expo/
 dist/
 web-build/
-expo-env.d.ts
 
 # Native
-.kotlin/
 *.orig.*
 *.jks
 *.p8
@@ -21,17 +14,80 @@ expo-env.d.ts
 # Metro
 .metro-health-check*
 
-# debug
-npm-debug.*
-yarn-debug.*
-yarn-error.*
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# macOS
-.DS_Store
-*.pem
+# React Native
+# Android/IntelliJ
+android/app/build/
+android/build/
+android/gradle/
+android/gradlew*
+android/.gradle/
+android/local.properties
+*.iml
+*.hprof
+.cxx/
+*.keystore
+!debug.keystore
 
-# local env files
-.env*.local
+# iOS
+ios/build/
+ios/Pods/
+ios/**/*.pbxuser
+ios/**/*.xcuserstate
+ios/**/*.xcworkspace
+ios/.xcode.env.local
 
-# typescript
+# TypeScript
 *.tsbuildinfo
+.tscache/
+
+# Environment variables - DO NOT COMMIT
+.env
+.env.*
+.env.local
+.env.development
+.env.production
+.env.test
+.env.*.local
+
+# Testing
+coverage/
+*.lcov
+.nyc_output
+
+# Debugging
+.flipper/
+.vscode/
+.idea/
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# OS
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# Miscellaneous
+*.tgz
+*.tar.gz
+.cache/
+.parcel-cache/
+.tmp/
+.temp/
+
+# EAS
+.eas/
+
+# Expo Router
+.expo-shared/
+
+# Watchman
+.watchmanconfig
