@@ -5,6 +5,7 @@ export default ({ config }: { config: ExpoConfig }): ExpoConfig => ({
   ...config,
   name: config.name ?? 'digbiz-app',
   slug: config.slug ?? 'digbiz-app',
+  scheme: 'digbizapp',
   plugins: [...(config.plugins ?? []), 'expo-router'],
   extra: {
     ...config.extra,
@@ -17,5 +18,6 @@ export default ({ config }: { config: ExpoConfig }): ExpoConfig => ({
       appId: process.env.FIREBASE_APP_ID,
       measurementId: process.env.FIREBASE_MEASUREMENT_ID,
     },
+    authRedirectScheme: 'digbizapp',
   },
 });
