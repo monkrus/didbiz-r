@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "name": "digbiz-app",
   "main": "expo-router/entry",
   "version": "1.0.0",
@@ -53,10 +52,4 @@
     "typescript": "~5.8.3"
   },
   "private": true
-=======
-  "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.24.0",
-    "firebase": "^12.1.0"
-  }
->>>>>>> b7ae285d0e81ce2ea1b75ca8a89dcf5b93c207eb
 }
