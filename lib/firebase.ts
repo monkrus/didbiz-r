@@ -2,15 +2,9 @@
 import { Platform } from "react-native";
 import Constants from "expo-constants";
 import { initializeApp, getApps } from "firebase/app";
-import {
-  getAuth,
-  initializeAuth,
-  getReactNativePersistence,
-  User,
-} from "firebase/auth";
+import { getAuth, initializeAuth, User } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type FirebaseExtra = {
   apiKey: string;
@@ -22,34 +16,60 @@ type FirebaseExtra = {
   measurementId?: string;
 };
 
-// Read from app.config.ts -> extra.firebase
 const firebaseConfig =
   (Constants.expoConfig?.extra?.firebase as FirebaseExtra) ??
   (Constants.manifest2?.extra?.firebase as FirebaseExtra);
 
 if (!firebaseConfig?.apiKey || !firebaseConfig?.projectId || !firebaseConfig?.appId) {
-  console.warn("Firebase config is missing. Did you set .env and app.config.ts?");
+  throw new Error("Firebase config missing. Check .env and app.config.ts");
 }
 
-// Single app instance
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 
-// Auth: on native, we must use initializeAuth with AsyncStorage persistence
+// Start with default auth
 let auth = getAuth(app);
+
+// On native, enable persistence using RN storage (handles v10–v12)
 if (Platform.OS !== "web") {
   try {
-    auth = initializeAuth(app, {
-      persistence: getReactNativePersistence(AsyncStorage),
-    });
-  } catch {
-    // initializeAuth throws if called twice — ignore on fast refresh
+    // lazy-require to avoid web bundling issues
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { default: AsyncStorage } = require("@react-native-async-storage/async-storage");
+
+    let getReactNativePersistence: ((storage: unknown) => unknown) | undefined;
+
+    try {
+      // Firebase v12+
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      getReactNativePersistence =
+        require("firebase/auth/react-native").getReactNativePersistence;
+    } catch {
+      try {
+        // Older versions (v9–v11)
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        getReactNativePersistence =
+          require("firebase/auth").getReactNativePersistence;
+      } catch {
+        // ignore
+      }
+    }
+
+    if (getReactNativePersistence) {
+      
+      auth = initializeAuth(app, {
+        persistence: getReactNativePersistence(AsyncStorage) as any,
+      });
+    } else {
+      auth = initializeAuth(app, { persistence: undefined as unknown as never });
+    }
+  } catch (e) {
+    console.log("Auth native persistence init skipped:", e);
   }
 }
 
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-/** Promise that resolves once Firebase reports the current user (or null). */
 export const getCurrentUser = (): Promise<User | null> =>
   new Promise((resolve) => {
     const unsub = auth.onAuthStateChanged((u) => {
