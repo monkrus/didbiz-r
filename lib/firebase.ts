@@ -16,49 +16,63 @@ type FirebaseExtra = {
   measurementId?: string;
 };
 
-const firebaseConfig =
-  (Constants.expoConfig?.extra?.firebase as FirebaseExtra) ??
-  (Constants.manifest2?.extra?.firebase as FirebaseExtra);
+// 1) Prefer values injected by app.config.ts -> extra.firebase
+// 2) Fallback to raw process.env (useful if Constants is undefined on web)
+const fromExtra =
+  (Constants.expoConfig?.extra?.firebase as Partial<FirebaseExtra>) ??
+  (Constants.manifest2?.extra?.firebase as Partial<FirebaseExtra>) ??
+  {};
+
+const fromEnv: Partial<FirebaseExtra> = {
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID,
+};
+
+const firebaseConfig = {
+  ...fromEnv,
+  ...fromExtra, // extra overrides env if present
+} as FirebaseExtra;
+
+// TEMP sanity log (remove after it works)
+console.log("Firebase cfg:", {
+  apiKeyStart: firebaseConfig?.apiKey?.slice(0, 6),
+  projectId: firebaseConfig?.projectId,
+  storageBucket: firebaseConfig?.storageBucket,
+});
 
 if (!firebaseConfig?.apiKey || !firebaseConfig?.projectId || !firebaseConfig?.appId) {
-  throw new Error("Firebase config missing. Check .env and app.config.ts");
+  throw new Error("Firebase config missing. Check .env (in digbiz-app/) and app.config.ts");
 }
 
+// Single app instance
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 
-// Start with default auth
+// Start with default auth; add native persistence on iOS/Android
 let auth = getAuth(app);
-
-// On native, enable persistence using RN storage (handles v10–v12)
 if (Platform.OS !== "web") {
   try {
-    // lazy-require to avoid web bundling issues
+    // lazy‑require so web bundling doesn’t choke
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { default: AsyncStorage } = require("@react-native-async-storage/async-storage");
-
-    let getReactNativePersistence: ((storage: unknown) => unknown) | undefined;
-
+    // Try v12 path first, then older fallback
+    let getReactNativePersistence: ((s: unknown) => unknown) | undefined;
     try {
-      // Firebase v12+
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      getReactNativePersistence =
-        require("firebase/auth/react-native").getReactNativePersistence;
+      getReactNativePersistence = require("firebase/auth/react-native").getReactNativePersistence;
     } catch {
       try {
-        // Older versions (v9–v11)
         // eslint-disable-next-line @typescript-eslint/no-var-requires
-        getReactNativePersistence =
-          require("firebase/auth").getReactNativePersistence;
-      } catch {
-        // ignore
-      }
+        getReactNativePersistence = require("firebase/auth").getReactNativePersistence;
+      } catch {}
     }
-
     if (getReactNativePersistence) {
-      
-      auth = initializeAuth(app, {
-        persistence: getReactNativePersistence(AsyncStorage) as any,
-      });
+      // @ts-expect-error runtime function type
+      auth = initializeAuth(app, { persistence: getReactNativePersistence(AsyncStorage) });
     } else {
       auth = initializeAuth(app, { persistence: undefined as unknown as never });
     }
