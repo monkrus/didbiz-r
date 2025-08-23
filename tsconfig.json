@@ -3,25 +3,19 @@
   "compilerOptions": {
     "strict": true,
     "baseUrl": ".",
-    "paths": {
-      "@/*": ["./*"]
-    }
+    "paths": { "@/*": ["./*"] }
   },
   "include": [
     "app/**/*.ts",
     "app/**/*.tsx",
     "lib/**/*.ts",
     "lib/**/*.tsx",
-    "constants/**/*.ts",
-    "constants/**/*.tsx",
     "components/**/*.ts",
     "components/**/*.tsx",
-    "expo-env.d.ts",
-    ".expo/types/**/*.ts"
+    "constants/**/*.ts",
+    "constants/**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts",
-    "**/*.test.ts"
-  ]
+  "exclude": ["node_modules"]
 }
