@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import { View, Text, TextInput, Button, Alert } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signInSchema, SignInInput } from "@/lib/validators/auth";
-import { signInEmail, mapAuthError } from "@/lib/auth";
+import { signInSchema, SignInInput } from "@/lib/validators/profile";
+import { signInEmail, mapAuthError } from "@/lib/types";
 import { Link } from "expo-router";
-import { useGoogleSignIn } from "@/lib/google";
+import { useGoogleSignIn } from "@/lib/firestore";
 
 export default function Login() {
   const { control, handleSubmit } = useForm<SignInInput>({

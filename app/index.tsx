@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Button } from "react-native";
 import { useEffect } from "react";
 import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { signOut } from "@/lib/auth";
+import { signOut } from "@/lib/types";
 
 export default function HomeScreen() {
   useEffect(() => {

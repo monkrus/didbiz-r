@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { View, Text, TextInput, Button, Alert } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signUpSchema, SignUpInput } from "@/lib/validators/auth";
-import { signUpEmail, mapAuthError } from "@/lib/auth";
+import { signUpSchema, SignUpInput } from "@/lib/validators/profile";
+import { signUpEmail, mapAuthError } from "@/lib/types";
 import { Link } from "expo-router";
 
 export default function Signup() {
