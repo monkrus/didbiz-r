@@ -1,3 +1,4 @@
+// lib/auth.ts
 import { auth } from "./firebase";
 import {
   createUserWithEmailAndPassword,
@@ -23,4 +24,21 @@ export async function signOut() {
 
 export function observeUser(cb: (u: User | null) => void) {
   return onAuthStateChanged(auth, cb);
+}
+
+// 🔹 friendly error mapper
+export function mapAuthError(code?: string) {
+  switch (code) {
+    case "auth/email-already-in-use":
+      return "That email is already registered";
+    case "auth/invalid-email":
+      return "Invalid email address";
+    case "auth/weak-password":
+      return "Password is too weak";
+    case "auth/user-not-found":
+    case "auth/wrong-password":
+      return "Invalid email or password";
+    default:
+      return "Something went wrong. Please try again.";
+  }
 }

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Slot, useRouter, useSegments } from "expo-router";
 import { View, ActivityIndicator } from "react-native";
-import { observeUser } from "@/lib/types";
+import { observeUser } from "../lib/auth"; // ✅ NOT from ../lib/types
 
 function AuthProvider() {
   const segments = useSegments(); // e.g. ["auth"] or ["main"]
