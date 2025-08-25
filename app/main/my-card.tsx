@@ -18,11 +18,8 @@ import { loadProfile, saveProfile } from "../../lib/firestore";
 import { pickImage, uploadImageAsync } from "../../lib/storage";
 import type { UserProfile } from "../../lib/types";
 
-// ✅ Sanity check: makes runtime errors clearer
 if (!profileSchema) {
-  throw new Error(
-    "profileSchema import failed — check lib/validators/profile.ts export and import path."
-  );
+  throw new Error("profileSchema import failed — check lib/validators/profile.ts");
 }
 
 const defaultVisibility = {
@@ -62,7 +59,6 @@ export default function MyCardScreen() {
     },
   });
 
-  // Load existing profile
   useEffect(() => {
     (async () => {
       const p = await loadProfile();
@@ -102,17 +98,22 @@ export default function MyCardScreen() {
   const onSubmit = handleSubmit(async (values) => {
     try {
       setLoading(true);
-      const uid = auth.currentUser?.uid!;
+      const uid = auth.currentUser?.uid;
+      if (!uid) throw new Error("No authenticated user. Please sign in again.");
+
       let avatarUrl = values.avatarUrl || "";
       let logoUrl = values.logoUrl || "";
 
-      // If local (file:// or data:), upload to Storage
       const isLocal = (u?: string) => !!u && /^file:|^data:/.test(u);
       if (isLocal(avatarUrl)) {
+        console.log("Uploading avatar...");
         avatarUrl = await uploadImageAsync(avatarUrl, `users/${uid}/avatar.jpg`);
+        console.log("Avatar uploaded:", avatarUrl);
       }
       if (isLocal(logoUrl)) {
+        console.log("Uploading logo...");
         logoUrl = await uploadImageAsync(logoUrl, `users/${uid}/logo.jpg`);
+        console.log("Logo uploaded:", logoUrl);
       }
 
       const payload: UserProfile = {
@@ -131,10 +132,11 @@ export default function MyCardScreen() {
         visibility: values.visibility,
       };
 
+      console.log("Saving profile…", payload);
       await saveProfile(payload);
       Alert.alert("Saved", "Your card has been updated.");
     } catch (e: any) {
-      console.log(e);
+      console.log("Save error:", e);
       Alert.alert("Save failed", e?.message ?? "Unknown error");
     } finally {
       setLoading(false);
@@ -164,12 +166,7 @@ export default function MyCardScreen() {
       {logoPreview ? (
         <Image
           source={{ uri: logoPreview }}
-          style={{
-            width: 120,
-            height: 60,
-            resizeMode: "contain",
-            marginTop: 6,
-          }}
+          style={{ width: 120, height: 60, resizeMode: "contain", marginTop: 6 }}
         />
       ) : null}
       <Button title="Pick logo" onPress={onPickLogo} />
