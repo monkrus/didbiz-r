@@ -1,9 +1,10 @@
+// app/main/index.tsx
 import { Link } from "expo-router";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { useEffect } from "react";
-import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { signOut } from "@/lib/types";
+import { db, auth } from "../lib/firebase";   // ← relative import
+import { signOut } from "../lib/auth";         // ← relative import
 
 export default function HomeScreen() {
   useEffect(() => {
@@ -20,6 +21,8 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Home</Text>
+      <Text style={{ marginBottom: 8 }}>UID: {auth.currentUser?.uid ?? "none"}</Text>
+
       <Link href="/main/my-card" style={styles.link}>My Card</Link>
       <Link href="/main/contacts" style={styles.link}>Contacts</Link>
       <Link href="/main/scan" style={styles.link}>Scan</Link>
