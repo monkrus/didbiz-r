@@ -1,6 +1,5 @@
 # DigBiz App
-
-Business card exchange app built with Expo + React Native.Testing only, project not finished.
+This is just a testing ground repo
 
 ## Setup
 
